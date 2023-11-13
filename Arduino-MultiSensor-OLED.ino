@@ -1,5 +1,5 @@
 #include "DHT.h"
-#include <Wire.h>  // Include Wire library for I2C
+#include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
@@ -12,18 +12,17 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define LIGHTSENSORPIN A0
 #define LEDPIN A1
-#define SOILMOISTUREPIN A2  // Talajnedvesség érzékelő tüske
+#define SOILMOISTUREPIN A2
 
 DHT dht(DHT_PIN, DHT_TYPE);
 
 void setup() {
   pinMode(LIGHTSENSORPIN, INPUT);
   pinMode(LEDPIN, OUTPUT);
-  pinMode(SOILMOISTUREPIN, INPUT);  // Beállítja a talajnedvesség érzékelőt bemenetként
+  pinMode(SOILMOISTUREPIN, INPUT);
   Serial.begin(9600);
   dht.begin();
 
-  // Inicializálja az OLED kijelzőt
   if(!display.begin(SSD1306_I2C_ADDRESS, OLED_RESET)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;);
@@ -35,7 +34,7 @@ void setup() {
 
 void loop() {
   float reading = analogRead(LIGHTSENSORPIN);
-  float soilMoisture = analogRead(SOILMOISTUREPIN);  // Olvassa el a talajnedvesség értékét
+  float soilMoisture = analogRead(SOILMOISTUREPIN);
 
   if (reading < 200) {
     digitalWrite(LEDPIN, HIGH);
@@ -48,7 +47,6 @@ void loop() {
   float humi = dht.readHumidity();
   float tempC = dht.readTemperature();
 
-  // Megjeleníti az OLED kijelzőn
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
@@ -66,10 +64,9 @@ void loop() {
   display.print("°C");
   display.setCursor(0, 30);
   display.print("Soil Moisture: ");
-  display.print(soilMoisture);  // Megjeleníti a talajnedvesség értékét
+  display.print(soilMoisture);
   display.display();
 
-  // Ugyancsak kiírja a soros monitoron
   Serial.print("Light Level: ");
   Serial.print(reading);
   Serial.print(" lux");
